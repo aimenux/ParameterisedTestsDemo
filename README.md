@@ -1,3 +1,5 @@
+![.NET 5](https://github.com/aimenux/ParameterisedTestsDemo/workflows/.NET%205/badge.svg)
+
 # ParameterisedTestsDemo
 ```
 Comparing the use of parameterized tests across various unit tests frameworks
