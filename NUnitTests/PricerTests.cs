@@ -15,7 +15,7 @@ namespace NUnitTests
         [TestCase(0, 1.5, 0)]
         [TestCase(1, 2.5, 2.5)]
         [TestCase(2, 3.5, 7)]
-        public void Given_Product_Should_Compute_Price(int quantity, double unitPrice, double expectedPrice)
+        public void Given_Product_Should_Compute_Price_V1(int quantity, double unitPrice, double expectedPrice)
         {
             // arrange
             var productUnitPrice = Convert.ToDecimal(unitPrice);
@@ -37,15 +37,13 @@ namespace NUnitTests
         }
 
         [Test, TestCaseSource(typeof(FactoryTestCases), nameof(FactoryTestCases.ProductDynamicData))]
-        public decimal Given_Product_Should_Compute_Price(int quantity, double unitPrice)
+        public decimal Given_Product_Should_Compute_Price_V2(int quantity, decimal unitPrice)
         {
             // arrange
-            var productUnitPrice = Convert.ToDecimal(unitPrice);
-
             var product = new Product
             {
                 Quantity = quantity,
-                UnitPrice = productUnitPrice
+                UnitPrice = unitPrice
             };
 
             var pricer = new Pricer();
@@ -56,18 +54,16 @@ namespace NUnitTests
         }
 
         [Test, TestCaseSource(nameof(GetDynamicData))]
-        public void Given_Basket_Should_Compute_Price(Basket basket, double expectedPrice)
+        public void Given_Basket_Should_Compute_Price(Basket basket, decimal expectedPrice)
         {
             // arrange
-            var productExpectedPrice = Convert.ToDecimal(expectedPrice);
-
             var pricer = new Pricer();
 
             // act
             var price = pricer.Compute(basket);
 
             // assert
-            price.Should().BeApproximately(productExpectedPrice, precision);
+            price.Should().BeApproximately(expectedPrice, precision);
         }
 
         private static IEnumerable<object[]> GetDynamicData()
@@ -95,9 +91,9 @@ namespace NUnitTests
                 }
             };
 
-            yield return new object[] { basket1, 0 };
-            yield return new object[] { basket2, 2.5 };
-            yield return new object[] { basket3, 10 };
+            yield return new object[] { basket1, 0m };
+            yield return new object[] { basket2, 2.5m };
+            yield return new object[] { basket3, 10m };
         }
 
         private class FactoryTestCases
@@ -106,9 +102,9 @@ namespace NUnitTests
             {
                 get
                 {
-                    yield return new TestCaseData(1, 1.5).Returns(1.5);
-                    yield return new TestCaseData(3, 1.5).Returns(4.5);
-                    yield return new TestCaseData(5, 1.5).Returns(7.5);
+                    yield return new TestCaseData(1, 1.5m).Returns(1.5m);
+                    yield return new TestCaseData(3, 1.5m).Returns(4.5m);
+                    yield return new TestCaseData(5, 1.5m).Returns(7.5m);
                 }
             }
         }

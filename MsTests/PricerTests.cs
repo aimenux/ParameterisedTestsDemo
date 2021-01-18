@@ -39,18 +39,16 @@ namespace MsTests
 
         [DataTestMethod]
         [DynamicData(nameof(GetDynamicData), DynamicDataSourceType.Method)]
-        public void Given_Basket_Should_Compute_Price(Basket basket, double expectedPrice)
+        public void Given_Basket_Should_Compute_Price(Basket basket, decimal expectedPrice)
         {
             // arrange
-            var productExpectedPrice = Convert.ToDecimal(expectedPrice);
-
             var pricer = new Pricer();
 
             // act
             var price = pricer.Compute(basket);
 
             // assert
-            price.Should().BeApproximately(productExpectedPrice, precision);
+            price.Should().BeApproximately(expectedPrice, precision);
         }
 
         private static IEnumerable<object[]> GetDynamicData()
@@ -78,9 +76,9 @@ namespace MsTests
                 }
             };
 
-            yield return new object[] { basket1, 0 };
-            yield return new object[] { basket2, 2.5 };
-            yield return new object[] { basket3, 10 };
+            yield return new object[] { basket1, 0m };
+            yield return new object[] { basket2, 2.5m };
+            yield return new object[] { basket3, 10m };
         }
     }
 }

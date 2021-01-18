@@ -11,6 +11,6 @@ In this demo, i m comparing the use of parameterized tests across various unit t
 |:-:|:-:|:-:|
 | DataTestMethod  | Test | Theory |
 | DataRow  | TestCase | InlineData |
-| DynamicData  | TestCaseData, TestCaseSource | MemberData, ClassData |
+| DynamicData  | TestCaseData, TestCaseSource | MemberData, ClassData, TheoryData |
 
 **`Tools`** : vs19, net 5.0, mstest, nunit, xunit
