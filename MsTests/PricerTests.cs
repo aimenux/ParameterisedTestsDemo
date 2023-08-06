@@ -5,80 +5,79 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
-namespace MsTests
+namespace MsTests;
+
+[TestClass]
+public class PricerTests
 {
-    [TestClass]
-    public class PricerTests
+    private const decimal Precision = 0.00001m;
+
+    [DataTestMethod]
+    [DataRow(0, 1.5, 0)]
+    [DataRow(1, 2.5, 2.5)]
+    [DataRow(2, 3.5, 7)]
+    public void Given_Product_Should_Compute_Price(int quantity, double unitPrice, double expectedPrice)
     {
-        private const decimal precision = 0.00001m;
+        // arrange
+        var productUnitPrice = Convert.ToDecimal(unitPrice);
+        var productExpectedPrice = Convert.ToDecimal(expectedPrice);
 
-        [DataTestMethod]
-        [DataRow(0, 1.5, 0)]
-        [DataRow(1, 2.5, 2.5)]
-        [DataRow(2, 3.5, 7)]
-        public void Given_Product_Should_Compute_Price(int quantity, double unitPrice, double expectedPrice)
+        var product = new Product
         {
-            // arrange
-            var productUnitPrice = Convert.ToDecimal(unitPrice);
-            var productExpectedPrice = Convert.ToDecimal(expectedPrice);
+            Quantity = quantity,
+            UnitPrice = productUnitPrice
+        };
 
-            var product = new Product
-            {
-                Quantity = quantity,
-                UnitPrice = productUnitPrice
-            };
+        var pricer = new Pricer();
 
-            var pricer = new Pricer();
+        // act
+        var price = pricer.Compute(product);
 
-            // act
-            var price = pricer.Compute(product);
+        // assert
+        price.Should().BeApproximately(productExpectedPrice, Precision);
+    }
 
-            // assert
-            price.Should().BeApproximately(productExpectedPrice, precision);
-        }
+    [DataTestMethod]
+    [DynamicData(nameof(GetDynamicData), DynamicDataSourceType.Method)]
+    public void Given_Basket_Should_Compute_Price(Basket basket, decimal expectedPrice)
+    {
+        // arrange
+        var pricer = new Pricer();
 
-        [DataTestMethod]
-        [DynamicData(nameof(GetDynamicData), DynamicDataSourceType.Method)]
-        public void Given_Basket_Should_Compute_Price(Basket basket, decimal expectedPrice)
+        // act
+        var price = pricer.Compute(basket);
+
+        // assert
+        price.Should().BeApproximately(expectedPrice, Precision);
+    }
+
+    private static IEnumerable<object[]> GetDynamicData()
+    {
+        var basket1 = new Basket();
+        var basket2 = new Basket
         {
-            // arrange
-            var pricer = new Pricer();
-
-            // act
-            var price = pricer.Compute(basket);
-
-            // assert
-            price.Should().BeApproximately(expectedPrice, precision);
-        }
-
-        private static IEnumerable<object[]> GetDynamicData()
+            new Product
+            {
+                Quantity = 1,
+                UnitPrice = 2.5m
+            }
+        };
+        var basket3 = new Basket
         {
-            var basket1 = new Basket();
-            var basket2 = new Basket
+            new Product
             {
-                new Product
-                {
-                    Quantity = 1,
-                    UnitPrice = 2.5m
-                }
-            };
-            var basket3 = new Basket
+                Quantity = 1,
+                UnitPrice = 2.5m
+            },
+            new Product
             {
-                new Product
-                {
-                    Quantity = 1,
-                    UnitPrice = 2.5m
-                },
-                new Product
-                {
-                    Quantity = 3,
-                    UnitPrice = 2.5m
-                }
-            };
+                Quantity = 3,
+                UnitPrice = 2.5m
+            }
+        };
 
-            yield return new object[] { basket1, 0m };
-            yield return new object[] { basket2, 2.5m };
-            yield return new object[] { basket3, 10m };
-        }
+        yield return new object[] { basket1, 0m };
+        yield return new object[] { basket2, 2.5m };
+        yield return new object[] { basket3, 10m };
     }
 }

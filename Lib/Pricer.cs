@@ -12,7 +12,7 @@ namespace Lib
 
         public decimal Compute(Basket basket)
         {
-            return basket.Sum(p => Compute(p));
+            return basket.Sum(Compute);
         }
     }
 }
