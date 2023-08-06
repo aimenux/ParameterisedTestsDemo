@@ -1,4 +1,4 @@
-![.NET 5](https://github.com/aimenux/ParameterisedTestsDemo/workflows/.NET%205/badge.svg)
+[![.NET](https://github.com/aimenux/ParameterisedTestsDemo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/aimenux/ParameterisedTestsDemo/actions/workflows/ci.yml)
 
 # ParameterisedTestsDemo
 ```
