@@ -4,6 +4,7 @@ using Lib.Models;
 using System;
 using System.Collections.Generic;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace XUnitTests;
 
@@ -48,6 +49,20 @@ public class PricerTests
 
         // assert
         price.Should().BeApproximately(expectedPrice, Precision);
+    }
+    
+    [Theory]
+    [ClassData(typeof(SerializableTestCases))]
+    public void Given_Product_Should_Compute_Price_V3(SerializableTestCase testcase)
+    {
+        // arrange
+        var pricer = new Pricer();
+
+        // act
+        var price = pricer.Compute(testcase.Product);
+
+        // assert
+        price.Should().BeApproximately(testcase.ExpectedPrice, Precision);
     }
 
     [Theory]
@@ -102,5 +117,44 @@ public class PricerTests
             Add(new Product(1, 2.5m), 2.5m);
             Add(new Product(2, 3.5m), 7m);
         }
+    }
+    
+    private class SerializableTestCases : TheoryData<SerializableTestCase>
+    {
+        public SerializableTestCases()
+        {
+            Add(new SerializableTestCase
+            {
+                Product = new Product(0, 1.5m),
+                ExpectedPrice = 0m
+            });
+            Add(new SerializableTestCase
+            {
+                Product = new Product(1, 2.5m),
+                ExpectedPrice = 2.5m
+            });
+            Add(new SerializableTestCase
+            {
+                Product = new Product(2, 3.5m),
+                ExpectedPrice = 7m
+            });
+        }
+    }
+    
+    public sealed class SerializableTestCase : IXunitSerializable
+    {
+        public Product Product { get; init; }
+
+        public decimal ExpectedPrice { get; init; }
+
+        public void Deserialize(IXunitSerializationInfo info)
+        {
+        }
+
+        public void Serialize(IXunitSerializationInfo info)
+        {
+        }
+
+        public override string ToString() => Product.Id;
     }
 }

@@ -13,4 +13,4 @@ In this demo, i m comparing the use of parameterized tests across various unit t
 | DataRow  | TestCase | InlineData |
 | DynamicData  | TestCaseData, TestCaseSource | MemberData, ClassData, TheoryData |
 
-**`Tools`** : vs22, net 6.0, mstest, nunit, xunit
+**`Tools`** : net 8.0, mstest, nunit, xunit
